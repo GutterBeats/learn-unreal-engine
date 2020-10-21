@@ -1,7 +1,13 @@
+//
+//  main.cpp
+//  Section 2 - TripleX
+//
+//  Created by Anthony Lesch on 10/20/20.
+//
+
 #include <iostream>
 #include <thread>
 #include <chrono>
-#include <windows.h>
 
 using namespace std;
 
@@ -9,7 +15,7 @@ void OutputWithDelay(string Text, int DelayMilliseconds, bool NewLine) {
     int Position = 0;
 
     char CharacterAtPosition;
-    while (CharacterAtPosition = Text[Position]) {
+    while ((CharacterAtPosition = Text[Position])) {
         if (CharacterAtPosition == '\0') break;
 
         ++Position;
@@ -17,7 +23,6 @@ void OutputWithDelay(string Text, int DelayMilliseconds, bool NewLine) {
         cout << CharacterAtPosition;
         
         if (((Position + rand()) % 3) == 0) {
-            Beep(1000, 20);
         }
 
         this_thread::sleep_for(chrono::milliseconds(DelayMilliseconds));
@@ -65,7 +70,7 @@ int main() {
     OutputWithDelay("\t+ You will not be given additional tries should you get any correct. Once you've lost, you're lost.");
     OutputWithDelay("Here we go.");
 
-    int MistakeCount = 0;
+    //int MistakeCount = 0;
     int ChallengeCount = 0;
 
     int GuessA, GuessB, GuessC;
@@ -86,4 +91,5 @@ int main() {
 
     return 0;
 }
+
 
