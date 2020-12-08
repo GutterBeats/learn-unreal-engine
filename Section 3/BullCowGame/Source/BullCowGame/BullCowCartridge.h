@@ -7,7 +7,7 @@
 #include "BullCowCartridge.generated.h"
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
-class BULLCOWGAME_API UBullCowCartridge : public UCartridge
+class BULLCOWGAME_API UBullCowCartridge final : public UCartridge
 {
 	GENERATED_BODY()
 
