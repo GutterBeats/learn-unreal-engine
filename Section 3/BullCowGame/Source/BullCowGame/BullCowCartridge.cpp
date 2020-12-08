@@ -12,7 +12,7 @@ void UBullCowCartridge::BeginPlay() // When the game starts
 void UBullCowCartridge::OnInput(const FString& Input) // When the player hits enter
 {
     ClearScreen();
-    FString WelcomeMessage = "Welcome " + Input + ", let's play!";
+    const FString WelcomeMessage = "Welcome " + Input + ", let's play!";
 
     PrintLine(WelcomeMessage);
 }
