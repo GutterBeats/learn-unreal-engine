@@ -1,15 +1,17 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #include "BullCowCartridge.h"
+#include <cstdlib>
 
 void UBullCowCartridge::BeginPlay() // When the game starts
 {
     Super::BeginPlay();
 
-    PrintLine(TEXT("Welcome to the BullCow Game!"));
-    PrintLine(TEXT("Please type your name and press enter."));
+    const FString WordListPath = FPaths::ProjectContentDir() / TEXT("Resources/WordList.txt");
+    FFileHelper::LoadFileToStringArray(WordList, *WordListPath);
+    srand(time(0));
     
-    bGameStart = true;
-    HiddenWord = TEXT("fail");
+    InitializeGame();
+    PrintLine(TEXT("The hidden word is: %s"), *HiddenWord);
 }
 
 void UBullCowCartridge::OnInput(const FString& Input) // When the player hits enter
@@ -19,15 +21,40 @@ void UBullCowCartridge::OnInput(const FString& Input) // When the player hits en
     if (bGameStart)
     {
         PrintWelcomeMessage(Input);
+        return;
     }
-    else
+    
+    if (Input.Equals(HiddenWord, ESearchCase::IgnoreCase))
     {
-        if (Input.Equals(HiddenWord, ESearchCase::IgnoreCase))
-        {
-            PrintLine("Congratulations! You're the WINNER.");
-        }
-        else PrintLine("Oops, you got it wrong.");
+        PrintLine(TEXT("Congratulations! You're the WINNER."));
+        return;
     }
+    
+    const int32 CharacterDifference = HiddenWord.Len() - Input.Len();
+
+    if (CharacterDifference > 0)
+    {
+        PrintLine(TEXT("Almost! You were %i character(s) under."), CharacterDifference);
+    }
+    else if (CharacterDifference < 0)
+    {
+        PrintLine(TEXT("So close. You were %i character(s) over."), CharacterDifference * -1);
+    }
+            
+    --Lives;
+}
+
+void UBullCowCartridge::InitializeGame()
+{
+    PrintLine(TEXT("Welcome to the BullCow Game!"));
+    PrintLine(TEXT("Please type your name and press enter."));
+
+    const int Random = rand() % WordList.Num();
+    PrintLine(TEXT("The random number is: %i"), Random);
+    
+    bGameStart = true;
+    HiddenWord = WordList[Random];
+    Lives = 4;
 }
 
 void UBullCowCartridge::PrintWelcomeMessage(const FString& Name)
@@ -39,6 +66,6 @@ void UBullCowCartridge::PrintWelcomeMessage(const FString& Name)
     
     bGameStart = false;
 
-    const FString WelcomeMessage = TEXT("Welcome " + Name + ", let's play!");
-    PrintLine(WelcomeMessage);
+    PrintLine(TEXT("Welcome %s, let's play!"), *Name);
+    PrintLine(TEXT("There are %i possible words."), WordList.Num());
 }
