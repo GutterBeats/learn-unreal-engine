@@ -6,6 +6,8 @@
 #include "Console/Cartridge.h"
 #include "BullCowCartridge.generated.h"
 
+enum GameOutcome { Win, Lose };
+
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class BULLCOWGAME_API UBullCowCartridge final : public UCartridge
 {
@@ -18,6 +20,9 @@ class BULLCOWGAME_API UBullCowCartridge final : public UCartridge
 	private:
 	void InitializeGame();
 	void PrintWelcomeMessage(const FString& Name);
+	void GetValidWordList();
+	bool IsIsogram(const FString& Word) const;
+	void EndGame(GameOutcome);
 	
 	bool bGameStart;
 	FString HiddenWord;

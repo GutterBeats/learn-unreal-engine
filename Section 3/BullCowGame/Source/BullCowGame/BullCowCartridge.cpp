@@ -2,19 +2,22 @@
 #include "BullCowCartridge.h"
 #include <cstdlib>
 
-void UBullCowCartridge::BeginPlay() // When the game starts
+void UBullCowCartridge::BeginPlay()
 {
     Super::BeginPlay();
 
-    const FString WordListPath = FPaths::ProjectContentDir() / TEXT("Resources/WordList.txt");
-    FFileHelper::LoadFileToStringArray(WordList, *WordListPath);
+    PrintLine(TEXT("Welcome to the BullCow Game!"));
+    PrintLine(TEXT("Please type your name and press enter."));
+
     srand(time(0));
     
+    GetValidWordList();
     InitializeGame();
-    PrintLine(TEXT("The hidden word is: %s"), *HiddenWord);
+
+    PrintLine(TEXT("The Hidden word is: %s"), *HiddenWord);
 }
 
-void UBullCowCartridge::OnInput(const FString& Input) // When the player hits enter
+void UBullCowCartridge::OnInput(const FString& Input)
 {
     ClearScreen();
 
@@ -26,7 +29,7 @@ void UBullCowCartridge::OnInput(const FString& Input) // When the player hits en
     
     if (Input.Equals(HiddenWord, ESearchCase::IgnoreCase))
     {
-        PrintLine(TEXT("Congratulations! You're the WINNER."));
+        EndGame(GameOutcome::Win);
         return;
     }
     
@@ -45,16 +48,10 @@ void UBullCowCartridge::OnInput(const FString& Input) // When the player hits en
 }
 
 void UBullCowCartridge::InitializeGame()
-{
-    PrintLine(TEXT("Welcome to the BullCow Game!"));
-    PrintLine(TEXT("Please type your name and press enter."));
-
-    const int Random = rand() % WordList.Num();
-    PrintLine(TEXT("The random number is: %i"), Random);
-    
+{   
     bGameStart = true;
-    HiddenWord = WordList[Random];
-    Lives = 4;
+    HiddenWord = WordList[rand() % WordList.Num()];
+    Lives = 5;
 }
 
 void UBullCowCartridge::PrintWelcomeMessage(const FString& Name)
@@ -67,5 +64,54 @@ void UBullCowCartridge::PrintWelcomeMessage(const FString& Name)
     bGameStart = false;
 
     PrintLine(TEXT("Welcome %s, let's play!"), *Name);
-    PrintLine(TEXT("There are %i possible words."), WordList.Num());
+    PrintLine(TEXT("You're trying to guess the %i letter word."), HiddenWord.Len());
+}
+
+bool UBullCowCartridge::IsIsogram(const FString& Word) const
+{
+    int32 WordLength = Word.Len();
+    for (int32 Index = 0; Index < WordLength; Index++)
+    {
+        char Character = Word[Index];
+        for (int32 NextIndex = Index + 1; NextIndex < WordLength; NextIndex++)
+        {
+            if (Character == Word[NextIndex])
+            {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+void UBullCowCartridge::GetValidWordList()
+{
+    const FString WordListPath = FPaths::ProjectContentDir() / TEXT("Resources/WordList.txt");
+    TArray<FString> AllWords;
+
+    FFileHelper::LoadFileToStringArray(AllWords, *WordListPath);
+
+    for (FString Word : AllWords)
+    {
+        if (IsIsogram(Word))
+        {
+            WordList.Emplace(Word);
+        }
+    }
+}
+
+void UBullCowCartridge::EndGame(GameOutcome Outcome)
+{
+    switch (Outcome)
+    {
+    case GameOutcome::Win:
+        PrintLine(TEXT("Congratulations! You're a WINNER."));
+        break;
+    case GameOutcome::Lose:
+        PrintLine(TEXT("Ooh, sucks to be you. You're a LOSER."));
+        break;
+    }
+
+    InitializeGame();
 }
