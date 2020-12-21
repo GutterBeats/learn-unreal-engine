@@ -27,24 +27,7 @@ void UBullCowCartridge::OnInput(const FString& Input)
         return;
     }
     
-    if (Input.Equals(HiddenWord, ESearchCase::IgnoreCase))
-    {
-        EndGame(GameOutcome::Win);
-        return;
-    }
-    
-    const int32 CharacterDifference = HiddenWord.Len() - Input.Len();
-
-    if (CharacterDifference > 0)
-    {
-        PrintLine(TEXT("Almost! You were %i character(s) under."), CharacterDifference);
-    }
-    else if (CharacterDifference < 0)
-    {
-        PrintLine(TEXT("So close. You were %i character(s) over."), CharacterDifference * -1);
-    }
-            
-    --Lives;
+    ProcessGuess(Input);
 }
 
 void UBullCowCartridge::InitializeGame()
@@ -64,7 +47,7 @@ void UBullCowCartridge::PrintWelcomeMessage(const FString& Name)
     bGameStart = false;
 
     PrintLine(TEXT("Welcome %s, let's play!"), *Name);
-    PrintLine(TEXT("You're trying to guess the %i letter word."), HiddenWord.Len());
+    PrintLine(TEXT("You have %i lives to guess the hidden word."), Lives);
 }
 
 bool UBullCowCartridge::IsIsogram(const FString& Word) const
@@ -101,6 +84,39 @@ void UBullCowCartridge::GetValidWordList()
     }
 }
 
+void UBullCowCartridge::ProcessGuess(const FString &GuessWord)
+{
+    if (GuessWord.Equals(HiddenWord, ESearchCase::IgnoreCase))
+    {
+        EndGame(GameOutcome::Win);
+        return;
+    }
+    
+    const int32 CharacterDifference = HiddenWord.Len() - GuessWord.Len();
+
+    if (CharacterDifference > 0)
+    {
+        PrintLine(TEXT("Almost! You were %i character(s) under."), CharacterDifference);
+    }
+    else if (CharacterDifference < 0)
+    {
+        PrintLine(TEXT("So close. You were %i character(s) over."), CharacterDifference * -1);
+    }
+    else
+    {
+        --Lives;
+
+        if (Lives == 0)
+        {
+            EndGame(GameOutcome::Lose);
+        }
+        else 
+        {
+            PrintLine(TEXT("Incorrect. You have %i lives left."), Lives);
+        }
+    }
+}
+
 void UBullCowCartridge::EndGame(GameOutcome Outcome)
 {
     switch (Outcome)
@@ -110,6 +126,7 @@ void UBullCowCartridge::EndGame(GameOutcome Outcome)
         break;
     case GameOutcome::Lose:
         PrintLine(TEXT("Ooh, sucks to be you. You're a LOSER."));
+        PrintLine(TEXT("The hidden word was: %s"), *HiddenWord);
         break;
     }
 

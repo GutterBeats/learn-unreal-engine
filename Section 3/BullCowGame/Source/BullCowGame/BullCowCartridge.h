@@ -19,9 +19,10 @@ class BULLCOWGAME_API UBullCowCartridge final : public UCartridge
 
 	private:
 	void InitializeGame();
-	void PrintWelcomeMessage(const FString& Name);
+	void PrintWelcomeMessage(const FString&);
 	void GetValidWordList();
-	bool IsIsogram(const FString& Word) const;
+	bool IsIsogram(const FString&) const;
+	void ProcessGuess(const FString&);
 	void EndGame(GameOutcome);
 	
 	bool bGameStart;
