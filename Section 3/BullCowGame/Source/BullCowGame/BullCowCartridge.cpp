@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #include "BullCowCartridge.h"
-#include <cstdlib>
 
 void UBullCowCartridge::BeginPlay()
 {
@@ -9,9 +8,7 @@ void UBullCowCartridge::BeginPlay()
     PrintLine(TEXT("Welcome to the BullCow Game!"));
     PrintLine(TEXT("Please type your name and press enter."));
 
-    srand(time(0));
-    
-    GetValidWordList();
+    InitializeValidWordList();
     InitializeGame();
 
     PrintLine(TEXT("The Hidden word is: %s"), *HiddenWord);
@@ -33,7 +30,7 @@ void UBullCowCartridge::OnInput(const FString& Input)
 void UBullCowCartridge::InitializeGame()
 {   
     bGameStart = true;
-    HiddenWord = WordList[rand() % WordList.Num()];
+    HiddenWord = WordList[FMath::RandRange(0, WordList.Num() - 1)];
     Lives = 5;
 }
 
@@ -68,7 +65,7 @@ bool UBullCowCartridge::IsIsogram(const FString& Word) const
     return true;
 }
 
-void UBullCowCartridge::GetValidWordList()
+void UBullCowCartridge::InitializeValidWordList()
 {
     const FString WordListPath = FPaths::ProjectContentDir() / TEXT("Resources/WordList.txt");
     TArray<FString> AllWords;
