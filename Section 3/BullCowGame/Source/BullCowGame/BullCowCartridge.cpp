@@ -30,7 +30,7 @@ void UBullCowCartridge::OnInput(const FString& Input)
 void UBullCowCartridge::InitializeGame()
 {   
     bGameStart = true;
-    HiddenWord = WordList[FMath::RandRange(0, WordList.Num() - 1)];
+    HiddenWord = Isograms[FMath::RandRange(0, Isograms.Num() - 1)];
     Lives = 5;
 }
 
