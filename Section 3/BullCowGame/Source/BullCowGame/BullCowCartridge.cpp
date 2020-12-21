@@ -47,7 +47,7 @@ void UBullCowCartridge::PrintWelcomeMessage(const FString& Name)
     PrintLine(TEXT("You have %i lives to guess the hidden word."), Lives);
 }
 
-bool UBullCowCartridge::IsIsogram(const FString& Word) const
+bool UBullCowCartridge::IsIsogram(const FString& Word)
 {
     int32 WordLength = Word.Len();
     for (int32 Index = 0; Index < WordLength; Index++)
@@ -68,17 +68,11 @@ bool UBullCowCartridge::IsIsogram(const FString& Word) const
 void UBullCowCartridge::InitializeValidWordList()
 {
     const FString WordListPath = FPaths::ProjectContentDir() / TEXT("Resources/WordList.txt");
-    TArray<FString> AllWords;
 
-    FFileHelper::LoadFileToStringArray(AllWords, *WordListPath);
-
-    for (FString Word : AllWords)
+    FFileHelper::LoadFileToStringArrayWithPredicate(Isograms, *WordListPath, [] (const FString& Word)
     {
-        if (IsIsogram(Word))
-        {
-            WordList.Emplace(Word);
-        }
-    }
+        return IsIsogram(Word);
+    });
 }
 
 void UBullCowCartridge::ProcessGuess(const FString &GuessWord)
