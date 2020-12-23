@@ -27,6 +27,32 @@ void UBullCowCartridge::OnInput(const FString& Input)
     ProcessGuess(Input);
 }
 
+FBullCowCount UBullCowCartridge::GetBullCows(const FString& Guess) const
+{
+    FBullCowCount Count;
+    
+    for (int32 GuessIndex = 0; GuessIndex < Guess.Len(); GuessIndex++)
+    {
+        if (Guess[GuessIndex] == HiddenWord[GuessIndex])
+        {
+            Count.Bulls++;
+            continue;
+        }
+
+        for (int32 HiddenIndex = 0; HiddenIndex < HiddenWord.Len(); HiddenIndex++)
+        {
+            if (Guess[GuessIndex] == HiddenWord[HiddenIndex])
+            {
+                Count.Cows++;
+                break;
+            }
+        }
+    }
+
+    return Count;
+}
+
+
 void UBullCowCartridge::InitializeGame()
 {   
     bGameStart = true;
@@ -49,10 +75,10 @@ void UBullCowCartridge::PrintWelcomeMessage(const FString& Name)
 
 bool UBullCowCartridge::IsIsogram(const FString& Word)
 {
-    int32 WordLength = Word.Len();
+    const int32 WordLength = Word.Len();
     for (int32 Index = 0; Index < WordLength; Index++)
     {
-        char Character = Word[Index];
+        const char Character = Word[Index];
         for (int32 NextIndex = Index + 1; NextIndex < WordLength; NextIndex++)
         {
             if (Character == Word[NextIndex])

@@ -7,6 +7,11 @@
 #include "BullCowCartridge.generated.h"
 
 enum GameOutcome { Win, Lose };
+struct FBullCowCount
+{
+	int32 Bulls = 0;
+	int32 Cows = 0;
+};
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class BULLCOWGAME_API UBullCowCartridge final : public UCartridge
@@ -16,6 +21,7 @@ class BULLCOWGAME_API UBullCowCartridge final : public UCartridge
 	public:
 	virtual void BeginPlay() override;
 	virtual void OnInput(const FString& Input) override;
+	FBullCowCount GetBullCows(const FString& Guess) const;
 
 	private:
 	void InitializeGame();
