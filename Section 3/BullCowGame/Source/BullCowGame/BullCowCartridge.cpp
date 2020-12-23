@@ -101,7 +101,7 @@ void UBullCowCartridge::InitializeValidWordList()
     });
 }
 
-void UBullCowCartridge::ProcessGuess(const FString &GuessWord)
+void UBullCowCartridge::ProcessGuess(const FString& GuessWord)
 {
     if (GuessWord.Equals(HiddenWord, ESearchCase::IgnoreCase))
     {
@@ -114,24 +114,27 @@ void UBullCowCartridge::ProcessGuess(const FString &GuessWord)
     if (CharacterDifference > 0)
     {
         PrintLine(TEXT("Almost! You were %i character(s) under."), CharacterDifference);
+        return;
     }
-    else if (CharacterDifference < 0)
+    
+    if (CharacterDifference < 0)
     {
         PrintLine(TEXT("So close. You were %i character(s) over."), CharacterDifference * -1);
+        return;
     }
-    else
-    {
-        --Lives;
+    
+    --Lives;
+    PrintLine(TEXT("Incorrect. You have %i lives left."), Lives);
 
-        if (Lives == 0)
-        {
-            EndGame(GameOutcome::Lose);
-        }
-        else 
-        {
-            PrintLine(TEXT("Incorrect. You have %i lives left."), Lives);
-        }
+    if (Lives <= 0)
+    {
+        EndGame(EGameOutcome::Lose);
+        return;
     }
+
+    const FBullCowCount BullCowCount = GetBullCows(GuessWord);
+
+    PrintLine(TEXT("You have %i Bulls and %i Cows"), BullCowCount.Bulls, BullCowCount.Cows);
 }
 
 void UBullCowCartridge::EndGame(const EGameOutcome Outcome)
