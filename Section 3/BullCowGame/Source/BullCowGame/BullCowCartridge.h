@@ -6,7 +6,8 @@
 #include "Console/Cartridge.h"
 #include "BullCowCartridge.generated.h"
 
-enum GameOutcome { Win, Lose };
+enum EGameOutcome { Win, Lose };
+
 struct FBullCowCount
 {
 	int32 Bulls = 0;
@@ -28,7 +29,7 @@ class BULLCOWGAME_API UBullCowCartridge final : public UCartridge
 	void PrintWelcomeMessage(const FString&);
 	void InitializeValidWordList();
 	void ProcessGuess(const FString&);
-	void EndGame(GameOutcome);
+	void EndGame(const EGameOutcome);
 
 	static bool IsIsogram(const FString&);
 	

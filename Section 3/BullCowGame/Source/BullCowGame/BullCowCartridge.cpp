@@ -105,7 +105,7 @@ void UBullCowCartridge::ProcessGuess(const FString &GuessWord)
 {
     if (GuessWord.Equals(HiddenWord, ESearchCase::IgnoreCase))
     {
-        EndGame(GameOutcome::Win);
+        EndGame(EGameOutcome::Win);
         return;
     }
     
@@ -134,14 +134,14 @@ void UBullCowCartridge::ProcessGuess(const FString &GuessWord)
     }
 }
 
-void UBullCowCartridge::EndGame(GameOutcome Outcome)
+void UBullCowCartridge::EndGame(const EGameOutcome Outcome)
 {
     switch (Outcome)
     {
-    case GameOutcome::Win:
+    case EGameOutcome::Win:
         PrintLine(TEXT("Congratulations! You're a WINNER."));
         break;
-    case GameOutcome::Lose:
+    case EGameOutcome::Lose:
         PrintLine(TEXT("Ooh, sucks to be you. You're a LOSER."));
         PrintLine(TEXT("The hidden word was: %s"), *HiddenWord);
         break;
