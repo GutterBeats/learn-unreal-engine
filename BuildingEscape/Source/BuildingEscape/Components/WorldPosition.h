@@ -1,4 +1,4 @@
-// Copyright Anthony Lesch 2020
+// Copyright © Anthony Lesch 2020
 
 #pragma once
 
@@ -23,6 +23,4 @@ protected:
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
-		
 };
