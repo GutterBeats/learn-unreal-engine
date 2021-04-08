@@ -78,4 +78,4 @@ Plugins/
 DerivedDataCache/
 .vscode/
 *.log
-BuildingEscape/Saved/AutoScreenshot.png
+.DS_Store
